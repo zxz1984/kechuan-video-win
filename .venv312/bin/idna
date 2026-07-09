@@ -1,6 +1,0 @@
-#!/Users/zxz/Desktop/可乐剪辑/可乐视频生成器_Mac版_v1.0/.venv312/bin/python
-import sys
-from idna.cli import main
-if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
-    sys.exit(main())

@@ -1,10 +1,34 @@
-# 不上传大文件（视频素材、生成结果）
+# 不上传大文件（视频素材、生成结果、二进制）
 bin/ffmpeg
 bin/ffprobe
+bin/*.bak*
+bin/*.bak_*
+
+# Python 虚拟环境（Mac 上的开发环境，GitHub Actions 会自己装）
+.venv/
+.venv312/
+.venv*/
 __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# Windows 离线安装包（GitHub Actions 会自动 pip install）
+wheels/
+
+# PyInstaller 打包产物
+dist/
+build/
+*.spec.bak
+
+# 备份文件
+*.bak
+*.tmp
+*.bak_*
+main.py.bak
+*_dirty.bak.py
+
+# 视频/音频/图片资源
 *.mp4
 *.mov
 *.MOV
@@ -13,11 +37,18 @@ __pycache__/
 *.flac
 *.png
 *.jpg
+
+# 运行时输出
 outputs/
 backups/
-~*.tmp
-.DS_Store
+logs/
 
-# 但要保留 bin 目录结构（如果有）
+# 系统
+.DS_Store
+~*.tmp
+*.swp
+*.swo
+
+# 但要保留 bin 目录结构（Windows Actions 会拷 ffmpeg.exe 进去）
 !bin/
 !bin/*.gitkeep
