@@ -27,8 +27,9 @@ DefaultGroupName={#MyAppName}
 ; 输出 setup.exe 文件名（带版本号）
 OutputBaseFilename=可乐口播视频生成器_Setup_v{#MyAppVersion}
 
-; 输出目录（PyInstaller 的 dist）
-OutputDir=dist
+; 输出目录（PyInstaller 的 dist，相对于仓库根目录）
+; .iss 文件在 scripts/，需要回退一级
+OutputDir=..\dist
 
 ; 压缩方式（lzma2 + solid 体积最小）
 Compression=lzma2
@@ -55,9 +56,10 @@ SetupWindowTitle=安装向导 - {#MyAppName} v{#MyAppVersion}
 
 [Files]
 ; 把 PyInstaller 生成的文件夹整个拷进安装目录
-; 源：dist\可乐口播视频生成器_win\*
+; 源：仓库根目录的 dist\可乐口播视频生成器_win\*
+; .iss 在 scripts/，所以源路径要 ..\dist\
 ; 目标：{app}\（用户的 Program Files 下）
-Source: "dist\可乐口播视频生成器_win\*"; \
+Source: "..\dist\可乐口播视频生成器_win\*"; \
   DestDir: "{app}"; \
   Flags: ignoreversion recursesubdirs createallsubdirs
 
