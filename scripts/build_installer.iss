@@ -42,9 +42,11 @@ PrivilegesRequiredOverridesAllowed=dialog
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 
-; 安装向导 UI 中文
+; 安装向导 UI（用 Inno Setup 内置 English + Unicode 中文标签）
+; 注：GitHub Actions 装的 Inno Setup 是精简版，没有 ChineseSimplified.isl 文件
+; 改用 Default.isl + [Messages] 内联中文，Unicode 自动渲染
 [Languages]
-Name: "chinesesimp"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+Name: "english"; MessagesFile: "compiler:Default.isl"
 
 ; UI 样式（Win10 风格）
 [Messages]
