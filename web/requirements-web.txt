@@ -1,0 +1,7 @@
+# 可乐 AI 分析 网页版 依赖
+# 在原项目 requirements.txt 基础上加 Flask + gunicorn
+
+Flask>=3.0
+gunicorn>=21.0
+pyyaml>=6.0
+requests>=2.28

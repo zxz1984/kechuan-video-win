@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% block title %}AI 智能{% endblock %}
+{% block content %}
+
+<!-- ========== 1️⃣ 输入 ========== -->
+<div class="section">
+  <div class="section-title">1️⃣ 输入</div>
+  <div class="form-row">
+    <label style="min-width:110px;">视频文件夹:</label>
+    <input type="text" placeholder="选择视频文件夹（批量处理）" style="flex:1;">
+    <button class="btn">📁 浏览</button>
+  </div>
+  <div class="muted" style="margin-left:118px;margin-bottom:8px;">✅ 已识别 3 个视频   首文件: 0701003.mp4</div>
+
+  <div class="form-row" style="align-items:flex-start;">
+    <label style="min-width:110px;">素材文件夹:</label>
+    <div style="flex:1;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:60px;">启用</th>
+            <th>路径</th>
+            <th style="width:120px;">标签</th>
+            <th style="width:80px;">秒数</th>
+            <th style="width:60px;">必插</th>
+            <th style="width:60px;">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td>车站周边/</td>
+            <td><input type="text" value="车站" style="width:100%;"></td>
+            <td><input type="text" value="5" style="width:60px;"></td>
+            <td><input type="checkbox" checked disabled></td>
+            <td><button class="btn">🗑</button></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td>室内装修/</td>
+            <td><input type="text" value="装修" style="width:100%;"></td>
+            <td><input type="text" value="8" style="width:60px;"></td>
+            <td><input type="checkbox" disabled></td>
+            <td><button class="btn">🗑</button></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td>沃尔玛外景/</td>
+            <td><input type="text" value="沃尔玛" style="width:100%;"></td>
+            <td><input type="text" value="6" style="width:60px;"></td>
+            <td><input type="checkbox" disabled></td>
+            <td><button class="btn">🗑</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn">➕ 添加文件夹</button>
+        <button class="btn">➖ 删除选中</button>
+      </div>
+      <div class="muted" style="margin-top:6px;">💡 标签给 LLM 看 / 秒数让 LLM 选合适窗 / 必插在模式 2 时生效</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 2️⃣ 预设模式 + 插入意图 ========== -->
+<div class="section">
+  <div class="section-title">2️⃣ 预设模式 + 插入意图</div>
+  <div class="form-row">
+    <label style="min-width:110px;">预设模式:</label>
+    <div class="btn-row">
+      <label><input type="radio" name="mode" value="1" checked> 每个文件夹插入 1 个</label>
+      <label><input type="radio" name="mode" value="2"> 必插文件夹 + LLM 自选</label>
+      <label><input type="radio" name="mode" value="3"> LLM 完全决定</label>
+      <span style="margin-left:20px;">N =</span>
+      <input type="number" value="3" min="1" max="20" style="width:60px;">
+      <span class="muted">（默认 = 文件夹数）</span>
+    </div>
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">插入意图:</label>
+    <input type="text" placeholder="可选，留空 = AI 自由发挥" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">视频行业:</label>
+    <div style="flex:1;">
+      <input type="text" placeholder="例如：南宁房产 / 美食探店" style="width:100%;">
+      <div class="muted" style="margin-top:4px;">↳ 自填行业关键词，让 LLM 不会跑偏字幕/文案方向。留空 = 通用（不传给 LLM）</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 3️⃣ 执行配置 ========== -->
+<div class="section">
+  <div class="section-title">3️⃣ 执行配置（沿用给 Tab 5）</div>
+  <div class="form-row">
+    <label style="min-width:110px;">插入策略:</label>
+    <select style="flex:1;">
+      <option>🎲 自由模式（LLM 全权决定）</option>
+      <option>🥪 三明治模式（头尾主镜头 + 中间大覆盖）</option>
+      <option>🎬 双端固定（头尾主镜头 + 中间撑满素材）</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">抽取方式:</label>
+    <div class="btn-row">
+      <label><input type="radio" name="ext2" value="random" checked> 🎲 随机</label>
+      <label><input type="radio" name="ext2" value="sequential"> 顺序</label>
+    </div>
+  </div>
+  <div class="form-row">
+    <label></label>
+    <label><input type="checkbox" checked> 🔇 插入素材无声（不勾 = 保留素材原声与主视频混音）</label>
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">画面布局:</label>
+    <select style="flex:1;">
+      <option>替换主材画面（铺满）</option>
+      <option>画中画 居中</option>
+      <option>画中画 左上角</option>
+      <option>画中画 右上角</option>
+      <option>画中画 左下角</option>
+      <option>画中画 右下角</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">PIP 大小:</label>
+    <input type="range" min="10" max="80" value="50" style="flex:1;">
+    <span style="min-width:50px; text-align:right;">50%</span>
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">PIP 边距:</label>
+    <input type="number" value="20" style="width:80px;">
+    <span class="muted"> 像素（仅画中画时生效）</span>
+  </div>
+  <div class="form-row">
+    <label style="min-width:110px;">用过素材处理:</label>
+    <select style="flex:1;">
+      <option>移到子文件夹</option>
+      <option>删除到回收站</option>
+      <option>不做处理</option>
+    </select>
+    <span class="muted" style="margin-left:8px;">↳ 包括主素材（视频文件夹处理完后移走/删除/不处理）</span>
+  </div>
+  <div class="form-row">
+    <label></label>
+    <label><input type="checkbox"> ⚡ 自动审核（勾上 = LLM 分析完直接推 Tab 5，不显示审核面板）</label>
+  </div>
+</div>
+
+<!-- ========== 4️⃣ 启动批量分析 ========== -->
+<div class="section">
+  <div class="section-title">4️⃣ 启动批量分析</div>
+  <div class="form-row">
+    <label style="min-width:110px;">并发数:</label>
+    <input type="number" value="3" min="1" max="10" style="width:60px;">
+    <span class="muted">个同时跑（默认 3，1=串行）</span>
+  </div>
+  <div class="btn-row" style="margin-top:8px;">
+    <button class="btn btn-success btn-big">🚀 开始批量 AI 分析</button>
+    <button class="btn btn-danger btn-big">⏹ 停止</button>
+  </div>
+  <div class="form-row" style="margin-top:10px;">
+    <label style="min-width:110px;">📤 AI 输出目录:</label>
+    <input type="text" value="/Users/zxz/Desktop/口播成品" style="flex:1;">
+    <button class="btn">📁</button>
+  </div>
+  <div class="muted" style="margin-left:118px;">（输出文件名带 _AI 后缀，自动持久化）</div>
+</div>
+
+<!-- ========== 5️⃣ 处理队列 + 审核 ========== -->
+<div class="section">
+  <div class="section-title">5️⃣ 处理队列 + 审核</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50px;">#</th>
+        <th>视频</th>
+        <th style="width:160px;">状态</th>
+        <th style="width:280px;">进度</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#eaf3fc;">
+        <td>1</td>
+        <td>0701003.mp4</td>
+        <td>✅ 完成</td>
+        <td>字幕 14 句 / 插入点 2 个</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>0701004.mp4</td>
+        <td>⏳ 处理中</td>
+        <td>ASR 完成 · LLM 分析中...</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>0701005.mp4</td>
+        <td>排队中</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="btn-row" style="margin-top:10px;">
+    <button class="btn">📝 审核选中</button>
+    <button class="btn">📤 推送选中到 Tab 5</button>
+    <button class="btn">📤 推送全部到 Tab 5</button>
+    <button class="btn btn-primary">🚀 批量推 Tab 5 并执行</button>
+  </div>
+
+  <!-- 二级审核面板 -->
+  <div class="section" style="margin-top:12px; background:#fafafa;">
+    <div class="section-title">📝 审核面板：0701003.mp4</div>
+    <div class="form-row">
+      <label style="min-width:110px;">字幕 1:</label>
+      <span>00:00 - 00:02.5</span>
+      <span style="flex:1; margin-left:10px;">全南宁最便宜的花园住宅</span>
+    </div>
+    <div class="form-row">
+      <label style="min-width:110px;">字幕 2:</label>
+      <span>00:02.5 - 00:05</span>
+      <span style="flex:1; margin-left:10px;">601000 套是全款不是首付</span>
+    </div>
+    <div class="muted" style="margin:6px 0 0 118px;">... 共 14 段字幕（点击展开）</div>
+
+    <div class="divider"></div>
+    <div style="font-weight:bold; margin-bottom:6px;">🎯 LLM 推荐插入点</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:50px;">#</th>
+          <th>开始</th>
+          <th>结束</th>
+          <th>持续</th>
+          <th>素材文件夹</th>
+          <th>布局</th>
+          <th style="width:80px;">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><input type="text" value="00:03.00" style="width:90px;"></td>
+          <td><input type="text" value="00:11.70" style="width:90px;"></td>
+          <td>8.7s</td>
+          <td>室内装修</td>
+          <td>替换主材画面</td>
+          <td><button class="btn">🗑</button></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input type="text" value="00:11.70" style="width:90px;"></td>
+          <td><input type="text" value="00:15.00" style="width:90px;"></td>
+          <td>3.3s</td>
+          <td>车站周边</td>
+          <td>替换主材画面</td>
+          <td><button class="btn">🗑</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="btn-row" style="margin-top:10px;">
+      <button class="btn">➕ 添加插入点</button>
+      <button class="btn btn-success">💾 保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 运行日志 ========== -->
+<div class="section">
+  <div class="section-title">📋 运行日志</div>
+  <div class="log-box">[10:35:01] 🚀 开始批量分析：3 个视频（并发 3）
+[10:35:02] 📐 视频 1/3 时长 18.28s
+[10:35:03] 🎙 ASR: 硅基流动 TeleSpeechASR
+[10:35:08] 📝 拿到字幕 14 句
+[10:35:09] 🤖 调 LLM: qwen-zxz @ 14.116.211.42:10003
+[10:35:11] 🤖 LLM 返回 2 个插入点
+[10:35:11] ⚠️ 客户端策略校验 [三明治]：1 个违规已剔除
+[10:35:12] ✅ 完成：保留 2 个插入点
+[10:35:13] 📐 视频 2/3 时长 22.10s
+...</div>
+</div>
+
+{% endblock %}

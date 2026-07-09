@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}混剪/插段{% endblock %}
+{% block content %}
+
+<!-- ===== 顶部：主视频 / 输出设置 ===== -->
+<div class="section">
+  <div class="section-title">📁 主视频 / 输出设置</div>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div class="form-row"><label style="min-width:120px;">主视频文件夹:</label><input type="text" style="flex:1;"><button class="btn">📁 选择</button></div>
+    <div class="form-row"><label style="min-width:120px;">输出文件夹:</label><input type="text" style="flex:1;"><button class="btn">📁 选择</button></div>
+
+    <div class="form-row"><label style="min-width:120px;">输出后缀:</label><input type="text" value="_混剪" style="width:140px;"></div>
+    <div class="form-row"><label style="min-width:120px;">主视频清理:</label>
+      <select style="width:200px;">
+        <option>移到子文件夹</option>
+        <option>删除到回收站</option>
+        <option>不做处理</option>
+      </select>
+    </div>
+
+    <div class="form-row"><label style="min-width:120px;">输出横竖屏:</label>
+      <select style="width:200px;">
+        <option>🎬 竖屏</option>
+        <option>横屏</option>
+      </select>
+    </div>
+    <div class="form-row"><label style="min-width:120px;">输出分辨率:</label>
+      <select style="width:140px;">
+        <option>📺 720P (高清)</option>
+        <option>📺 1080P (超清)</option>
+      </select>
+      <span class="hint" style="margin-left:8px;">按原比例</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 中间：插入点列表 + 编辑面板 ===== -->
+<div style="display:grid; grid-template-columns: 360px 1fr; gap:12px;">
+  <!-- 左：插入点列表 -->
+  <div class="section">
+    <div class="section-title">📋 插入点列表（2 个）</div>
+    <div class="btn-row" style="margin-bottom:8px;">
+      <button class="btn">➕ 添加</button>
+      <button class="btn">💾 保存</button>
+      <button class="btn">📂 加载</button>
+    </div>
+    <div class="scroll-y" style="max-height:480px;">
+      <div class="script-card" style="cursor:pointer; border-color:#4a90d9;">
+        <div class="head">
+          <span class="idx">#1</span>
+          <span style="font-size:11px;">00:05.00 ~ 00:08.00</span>
+          <span style="flex:1;"></span>
+          <span style="font-size:11px;color:#888;">替换主材画面</span>
+        </div>
+        <div class="muted" style="font-size:11px;">📁 车站周边</div>
+      </div>
+      <div class="script-card" style="cursor:pointer;">
+        <div class="head">
+          <span class="idx">#2</span>
+          <span style="font-size:11px;">00:15.00 ~ 00:20.00</span>
+          <span style="flex:1;"></span>
+          <span style="font-size:11px;color:#888;">画中画 右上角</span>
+        </div>
+        <div class="muted" style="font-size:11px;">📁 沃尔玛外景</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右：插入点编辑 -->
+  <div class="section">
+    <div class="section-title">📝 插入点编辑</div>
+
+    <!-- 标题 + 删除 -->
+    <div class="btn-row" style="justify-content: space-between; margin-bottom:10px;">
+      <b>编辑 #1：车站周边</b>
+      <button class="btn">🗑 删除</button>
+    </div>
+
+    <!-- 时间段 -->
+    <div class="section">
+      <div class="section-title">⏱️ 时间段</div>
+      <div class="form-row"><label>开始时间（分 : 秒 . 百分秒）</label></div>
+      <div class="btn-row">
+        <input type="number" value="0" min="0" max="99" style="width:60px;"> <span>分</span>
+        <input type="number" value="5" min="0" max="59" style="width:60px;"> <span>秒</span>
+        <input type="number" value="0" min="0" max="99" style="width:60px;"> <span>百分秒</span>
+      </div>
+      <div class="form-row" style="margin-top:8px;"><label>结束时间（留空 = 不限）</label></div>
+      <div class="btn-row">
+        <input type="number" value="0" min="0" max="99" style="width:60px;"> <span>分</span>
+        <input type="number" value="8" min="0" max="59" style="width:60px;"> <span>秒</span>
+        <input type="number" value="0" min="0" max="99" style="width:60px;"> <span>百分秒</span>
+      </div>
+      <label class="form-row" style="margin-top:8px;"><input type="checkbox" checked> ☑ 留空不限（结束时间不生效）</label>
+    </div>
+
+    <!-- 素材文件夹 -->
+    <div class="section">
+      <div class="section-title">📁 素材文件夹</div>
+      <div class="muted">📂 路径（必填，选好文件夹后素材数会自动显示）</div>
+      <div class="btn-row" style="margin:6px 0;">
+        <input type="text" value="/Users/zxz/Desktop/素材/车站周边" style="flex:1;">
+        <button class="btn">📁 选择...</button>
+      </div>
+      <div class="muted">✅ 已识别 12 个素材片段</div>
+      <div class="muted" style="margin-top:8px;">📝 备注（可选）</div>
+      <input type="text" placeholder="例如：突出地铁口+商业氛围" style="width:100%; margin-top:4px;">
+    </div>
+
+    <!-- 抽取方式 -->
+    <div class="section">
+      <div class="section-title">🎲 抽取方式</div>
+      <div class="btn-row">
+        <label><input type="radio" name="ext" checked> 🎲 随机</label>
+        <label><input type="radio" name="ext"> 顺序</label>
+      </div>
+      <label class="form-row" style="margin-top:6px;"><input type="checkbox" checked> 🔇 插入素材无声（不勾 = 保留素材原声与主视频混音）</label>
+    </div>
+
+    <!-- 画面布局 -->
+    <div class="section">
+      <div class="section-title">🖼 画面布局</div>
+      <div class="muted">布局方式</div>
+      <select style="width:100%; padding:6px; margin-top:4px;">
+        <option>替换主材画面（铺满）</option>
+        <option>画中画 居中</option>
+        <option>画中画 左上角</option>
+        <option>画中画 右上角</option>
+        <option>画中画 左下角</option>
+        <option>画中画 右下角</option>
+      </select>
+
+      <div class="muted" style="margin-top:10px;">PIP 大小（画中画时才生效）</div>
+      <div class="btn-row" style="margin-top:4px;">
+        <input type="range" min="10" max="80" value="50" style="flex:1;">
+        <span style="min-width:50px; text-align:right;">50%</span>
+      </div>
+
+      <div class="muted" style="margin-top:10px;">PIP 边距（距画布边缘的像素，画中画时才生效）</div>
+      <input type="number" value="20" style="width:100px; margin-top:4px;">
+    </div>
+
+    <!-- 用过素材处理 -->
+    <div class="section">
+      <div class="section-title">🗑 用过素材处理</div>
+      <div class="muted">处理方式</div>
+      <select style="width:100%; padding:6px; margin-top:4px;">
+        <option>移到子文件夹</option>
+        <option>删除到回收站</option>
+        <option>不做处理</option>
+      </select>
+      <div class="muted" style="margin-top:10px;">子目录名（移动/复制模式时用）</div>
+      <input type="text" value="used" style="width:100%; margin-top:4px;">
+    </div>
+
+    <!-- 操作按钮 -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+      <button class="btn btn-success btn-big">✅ 保存到列表</button>
+      <button class="btn btn-big">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 底部：开始 + 停止 ===== -->
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:12px;">
+  <button class="btn btn-success btn-big" style="font-size:14px;font-weight:bold;padding:14px;">🚀 开 始 混 剪</button>
+  <button class="btn btn-danger btn-big" style="font-size:12px;padding:14px;">⏹ 停止</button>
+</div>
+
+<!-- ===== 运行日志 ===== -->
+<div class="section" style="margin-top:12px;">
+  <div class="section-title">📋 运行日志</div>
+  <div class="log-box">[10:30:01] 🚀 开始混剪：主视频 0701003.mp4，插入点 2 个
+[10:30:02] 🎬 探测主视频分辨率: 1280x720
+[10:30:02] 📁 加载插入点 1: 00:05-00:08 / 车站周边
+[10:30:03] 🎲 随机抽取素材: 车站周边_03.mp4
+[10:30:05] 🎞 ffmpeg 拼接段 1/2 ...
+[10:30:12] ✅ 段 1 完成
+[10:30:13] 📁 加载插入点 2: 00:15-00:20 / 沃尔玛外景
+[10:30:14] 🎲 随机抽取素材: 沃尔玛外景_02.mp4
+[10:30:18] 🎞 ffmpeg 拼接段 2/2 ...
+[10:30:25] ✅ 段 2 完成
+[10:30:26] 🎞 合并完整输出: ~/Desktop/口播成品/0701003_混剪.mp4
+[10:30:28] ✅ 全部完成，耗时 27 秒</div>
+</div>
+
+{% endblock %}

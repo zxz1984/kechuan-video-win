@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}成品{% endblock %}
+{% block content %}
+
+<!-- ===== 顶部输出目录 ===== -->
+<div class="section">
+  <div class="btn-row" style="justify-content: space-between;">
+    <div class="btn-row">
+      <span>输出目录:</span>
+      <span style="color:#4a90d9; font-weight:bold;">~/Desktop/口播成品</span>
+      <span class="muted" style="margin-left:10px;">本轮生成 3 个视频</span>
+    </div>
+    <button class="btn">📂 打开文件夹</button>
+  </div>
+</div>
+
+<!-- ===== 视频缩略图 grid ===== -->
+<div class="section">
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="thumb-placeholder" style="display:flex;align-items:center;justify-content:center;color:#888;">🎞 视频1</div>
+      <div class="name">大漂亮-001/0701003.mp4</div>
+      <div class="muted">18.3s · 3.2 MB</div>
+    </div>
+    <div class="product-card">
+      <div class="thumb-placeholder" style="display:flex;align-items:center;justify-content:center;color:#888;">🎞 视频2</div>
+      <div class="name">大漂亮-001/0701004.mp4</div>
+      <div class="muted">22.1s · 4.1 MB</div>
+    </div>
+    <div class="product-card">
+      <div class="thumb-placeholder" style="display:flex;align-items:center;justify-content:center;color:#888;">🎞 视频3</div>
+      <div class="name">大漂亮-001/0701005.mp4</div>
+      <div class="muted">19.8s · 3.6 MB</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 进度条 + 状态 ===== -->
+<div class="section">
+  <div class="btn-row" style="gap:12px;">
+    <div class="progress" style="flex:1;">
+      <div class="progress-bar" style="width:65%;"></div>
+    </div>
+    <span style="font-weight:bold; min-width:40px;">65%</span>
+    <span class="muted">生成中: 2/3</span>
+  </div>
+</div>
+
+<!-- ===== 运行日志 ===== -->
+<div class="section">
+  <div class="section-title">📋 运行日志</div>
+  <div class="log-box">[10:32:01] 🚀 开始批量生成：3 条文案
+[10:32:02] 📝 处理文案 1/3：大漂亮-001 / 0701003
+[10:32:05] 🎤 提交音频任务到 RunningHub (a3f2...)
+[10:32:18] ✅ 音频生成完成（13s）
+[10:32:19] 🎬 提交视频任务（图片+音频+动作）
+[10:32:45] ✅ 视频生成完成（26s）
+[10:32:46] 🎞 ffmpeg 合并片段中...
+[10:32:48] ✅ 输出：~/Desktop/口播成品/大漂亮-001/0701003.mp4
+[10:32:49] 📝 处理文案 2/3：大漂亮-001 / 0701004
+...</div>
+</div>
+
+{% endblock %}

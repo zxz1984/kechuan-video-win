@@ -1,0 +1,39 @@
+{
+  "mainFolder": "/Users/zxz/Desktop/口播成品",
+  "mainVideos": [],
+  "insertPoints": [
+    {
+      "startTime": 4.0,
+      "endTime": 0.0,
+      "folder": "/Users/zxz/Desktop/口播成品/1",
+      "videos": [],
+      "cleanupMode": "扫描文件夹（不动）",
+      "silent": false,
+      "layout": "替换主材画面（黑边填）",
+      "pipScale": 0.5468085106382979,
+      "orientation": "横屏 16:9",
+      "resolution": "720P (高清)",
+      "note": ""
+    },
+    {
+      "startTime": 0.0,
+      "endTime": 0.0,
+      "folder": "/Users/zxz/Desktop/口播成品",
+      "videos": [],
+      "cleanupMode": "扫描文件夹（不动）",
+      "silent": false,
+      "layout": "替换主材画面（黑边填）",
+      "pipScale": 0.3,
+      "orientation": "横屏 16:9",
+      "resolution": "720P (高清)",
+      "note": ""
+    }
+  ],
+  "outputFolder": "/Users/zxz/Desktop/口播成品/1",
+  "outputSuffix": "_混剪",
+  "outputSettings": {
+    "orientation": "横屏 16:9",
+    "resolution": "720P (高清)"
+  },
+  "mainCleanupMode": "扫描文件夹（不动）"
+}

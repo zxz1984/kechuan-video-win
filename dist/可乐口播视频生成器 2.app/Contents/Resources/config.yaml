@@ -1,0 +1,68 @@
+action_prompts:
+- 角色面向镜头说话，表情自然，偶尔微笑
+- 角色面向镜头激动的说话，固定镜头。手指向右边告诉观众那边发生的事情
+- 角色激情洋溢地说话，配合手势强调重点
+- 角色亲切地和观众交流，就像和朋友聊天一样
+- 角色认真严肃地介绍产品，突出专业感
+api:
+  audio_workflow: '1932357354590040066'
+  base_url: https://www.runninghub.cn/openapi/v2
+  heygem_workflow: '2073814530450345986'
+  key: e8cd80112f364f01a9b72acdb6b7da0e
+  video_infinite_workflow: '2045462984926961665'
+  video_workflow: '2071119122397745154'
+asr:
+  key: sk-fmeszqoyzhtaixokgiypoarpctmmmcyaxkesemfzpvnkdfuw
+  model: FunAudioLLM/SenseVoiceSmall
+  url: https://api.siliconflow.cn/v1/audio/transcriptions
+defaults:
+  ai_output_dir: /Users/zxz/Desktop/口播成品/ai剪辑
+  industry: 房产
+  insert_strategy: two_anchor
+  material_folders:
+  - enabled: true
+    label: 全都是小区环境镜头
+    path: /Users/zxz/Desktop/口播成品/1/全都是小区环境镜头
+    required: false
+    seconds: 5
+  - enabled: true
+    label: 全都是小区周边环境
+    path: /Users/zxz/Desktop/口播成品/1/全都是小区周边环境
+    required: false
+    seconds: 5
+  - enabled: true
+    label: 全都是样板间装修镜头
+    path: /Users/zxz/Desktop/口播成品/1/全都是样板间装修镜头
+    required: false
+    seconds: 5
+  output_dir: /Users/zxz/Desktop/口播成品/ai剪辑
+  video_folder: /Users/zxz/Desktop/口播成品/1/1
+llm:
+  key: eb7743ae8f104428a94166497150a2dc
+  model: Qwen3-Next-80B-A3B-Instruct
+  url: https://wishub-x6.ctyun.cn/v1/chat/completions
+max_concurrent: '5'
+modes:
+- flow: audio
+  id: audio_only
+  name: 🎙 仅生成语音
+  ui:
+    show_action_prompt: false
+- flow: video
+  id: full_video
+  name: 🎬 语音+视频
+  ui:
+    show_action_prompt: true
+- flow: video_infinite
+  id: full_video_infinite
+  name: 🎬 语音+视频 infinite
+  ui:
+    show_action_prompt: false
+- flow: heygem
+  id: heygem_digital_human
+  name: 🎭 纯 Heygem 模式
+  needs_reference_audio: true
+  needs_video: true
+  select: '2'
+  ui:
+    show_action_prompt: false

@@ -1,0 +1,73 @@
+action_prompts:
+- 角色面向镜头激动的说话，固定镜头。手指向右边告诉观众那边发生的事情
+- 角色面向镜头激动的说话，固定镜头。手指向右边告诉观众那边发生的事情
+- 角色激情洋溢地说话，配合手势强调重点
+- 角色亲切地和观众交流，就像和朋友聊天一样
+- 角色认真严肃地介绍产品，突出专业感
+api:
+  audio_workflow: '1932357354590040066'
+  base_url: https://www.runninghub.cn/openapi/v2
+  heygem_workflow: '2073814530450345986'
+  key: e8cd80112f364f01a9b72acdb6b7da0e
+  video_infinite_workflow: '2045462984926961665'
+  video_workflow: '2071119122397745154'
+asr:
+  key: sk-fmeszqoyzhtaixokgiypoarpctmmmcyaxkesemfzpvnkdfuw
+  model: FunAudioLLM/SenseVoiceSmall
+  url: https://api.siliconflow.cn/v1/audio/transcriptions
+defaults:
+  ai_output_dir: /Volumes/移动硬盘/可乐剪辑/成品
+  industry: 南宁房产
+  insert_strategy: sandwich
+  material_folders:
+  - enabled: true
+    label: 附近配套山姆超市配套的环境镜头
+    path: /Volumes/移动硬盘/可乐剪辑/插入素材/附近配套山姆超市配套的环境镜头
+    required: false
+    seconds: 3
+  - enabled: true
+    label: 附近交通情况地铁口镜头
+    path: /Volumes/移动硬盘/可乐剪辑/插入素材/附近交通情况地铁口镜头
+    required: false
+    seconds: 5
+  - enabled: true
+    label: 我的房子样板间室内镜头
+    path: /Volumes/移动硬盘/可乐剪辑/插入素材/我的房子样板间室内镜头
+    required: false
+    seconds: 5
+  - enabled: true
+    label: 周边环境爱情海（爱琴海）购物广场镜头
+    path: /Volumes/移动硬盘/可乐剪辑/插入素材/周边环境爱情海（爱琴海）购物广场镜头
+    required: false
+    seconds: 5
+  output_dir: /Volumes/移动硬盘/可乐剪辑/成品
+  video_folder: /Volumes/移动硬盘/可乐剪辑/人物主素材成品/黄若慧/临时20条
+llm:
+  key: eb7743ae8f104428a94166497150a2dc
+  model: Qwen3-Next-80B-A3B-Instruct
+  url: https://wishub-x6.ctyun.cn/v1/chat/completions
+max_concurrent: '5'
+modes:
+- flow: audio
+  id: audio_only
+  name: 🎙 仅生成语音
+  ui:
+    show_action_prompt: false
+- flow: video
+  id: full_video
+  name: 🎬 语音+视频
+  ui:
+    show_action_prompt: true
+- flow: video_infinite
+  id: full_video_infinite
+  name: 🎬 语音+视频 infinite
+  ui:
+    show_action_prompt: false
+- flow: heygem
+  id: heygem_digital_human
+  name: 🎭 纯 Heygem 模式
+  needs_reference_audio: true
+  needs_video: true
+  select: '2'
+  ui:
+    show_action_prompt: false

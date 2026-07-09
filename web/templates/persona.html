@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}人设管理{% endblock %}
+{% block content %}
+
+<div class="section">
+  <div class="section-title">已保存人设</div>
+
+  <!-- ===== 上半：人设缩略图列表 + 操作按钮 ===== -->
+  <div class="persona-grid">
+    <div class="persona-thumb active">
+      <div class="thumb-placeholder" style="background:#eee;height:100px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#888;">📷 大漂亮</div>
+      <div class="name">大漂亮-001</div>
+      <div class="muted">3 图 / 3 声</div>
+    </div>
+    <div class="persona-thumb">
+      <div class="thumb-placeholder" style="background:#eee;height:100px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#888;">📷 郑大嘴</div>
+      <div class="name">郑大嘴-001</div>
+      <div class="muted">2 图 / 2 声</div>
+    </div>
+    <div class="persona-thumb">
+      <div class="thumb-placeholder" style="background:#eee;height:100px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#888;">📷 馨月</div>
+      <div class="name">馨月-001</div>
+      <div class="muted">4 图 / 3 声</div>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:10px;">
+    <button class="btn">➕ 新增人设</button>
+    <button class="btn">✏️ 编辑选中</button>
+    <button class="btn">🗑 删除选中</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===== 下半：人设详情 ===== -->
+<div class="section">
+  <div class="section-title">人设详情</div>
+  <div class="form-row">
+    <label>人设名称:</label>
+    <input type="text" value="大漂亮-001" style="flex:1;">
+  </div>
+
+  <div class="divider"></div>
+  <div style="font-weight:bold;margin-bottom:6px;">📷 图片（多选随机）</div>
+  <div class="persona-grid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr));">
+    <div class="persona-thumb">
+      <div class="thumb-placeholder" style="background:#ffd;height:80px;border-radius:3px;display:flex;align-items:center;justify-content:center;">图片1</div>
+      <label><input type="checkbox" checked> 启用</label>
+    </div>
+    <div class="persona-thumb">
+      <div class="thumb-placeholder" style="background:#ffd;height:80px;border-radius:3px;display:flex;align-items:center;justify-content:center;">图片2</div>
+      <label><input type="checkbox" checked> 启用</label>
+    </div>
+    <div class="persona-thumb">
+      <div class="thumb-placeholder" style="background:#ffd;height:80px;border-radius:3px;display:flex;align-items:center;justify-content:center;">图片3</div>
+      <label><input type="checkbox" checked> 启用</label>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px;">
+    <button class="btn">➕ 添加图片</button>
+    <button class="btn">🗑 删除选中</button>
+  </div>
+
+  <div class="divider"></div>
+  <div style="font-weight:bold;margin-bottom:6px;">🎤 声音（多选随机）</div>
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <div class="persona-thumb" style="flex:0 0 200px;">
+      <div style="background:#eef;height:40px;border-radius:3px;display:flex;align-items:center;padding:0 8px;">🎵 声音A</div>
+      <label><input type="checkbox" checked> 启用</label>
+      <button class="btn" style="margin-top:4px;">▶ 试听</button>
+    </div>
+    <div class="persona-thumb" style="flex:0 0 200px;">
+      <div style="background:#eef;height:40px;border-radius:3px;display:flex;align-items:center;padding:0 8px;">🎵 声音B</div>
+      <label><input type="checkbox" checked> 启用</label>
+      <button class="btn" style="margin-top:4px;">▶ 试听</button>
+    </div>
+    <div class="persona-thumb" style="flex:0 0 200px;">
+      <div style="background:#eef;height:40px;border-radius:3px;display:flex;align-items:center;padding:0 8px;">🎵 声音C</div>
+      <label><input type="checkbox" checked> 启用</label>
+      <button class="btn" style="margin-top:4px;">▶ 试听</button>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:8px;">
+    <button class="btn">➕ 添加声音</button>
+    <button class="btn">🗑 删除选中</button>
+  </div>
+</div>
+
+{% endblock %}

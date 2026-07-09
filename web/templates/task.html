@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}任务{% endblock %}
+{% block content %}
+
+<!-- ===== 顶部按钮行 ===== -->
+<div class="section">
+  <div class="btn-row" style="justify-content: space-between;">
+    <div class="btn-row">
+      <span style="font-weight:bold;">任务（单次最高 20 条）</span>
+      <span id="count-label" class="muted">1 / 20</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn">➕ 添加文案框</button>
+      <button class="btn">📥 批量导入</button>
+      <button class="btn" onclick="document.getElementById('prompt-mgr').style.display='block'">⚙️ 管理动作提示词</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 输出目录 ===== -->
+<div class="section">
+  <div class="form-row">
+    <label>输出目录:</label>
+    <input type="text" id="output-dir" style="flex:1;" value="~/Desktop/口播成品">
+    <button class="btn">浏览</button>
+  </div>
+  <div class="form-row">
+    <label></label>
+    <label><input type="checkbox"> 🔊 仅生成语音（不生成视频，节省费用）</label>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===== 文案卡片区 ===== -->
+<div id="script-list">
+  <!-- 卡片 1（默认） -->
+  <div class="script-card">
+    <div class="head">
+      <span class="idx">文案 1:</span>
+      <select>
+        <option value="">选择人设...</option>
+        <option>大漂亮-001</option>
+        <option>郑大嘴-001</option>
+        <option>馨月-001</option>
+      </select>
+      <span class="muted" title="图片">📷</span>
+      <span class="muted" title="声音">🎤</span>
+      <span style="flex:1;"></span>
+      <span>🎬</span>
+      <select>
+        <option>选择动作提示词...</option>
+        <option>自然走动+手势</option>
+        <option>近景特写+微笑</option>
+        <option>边走边说</option>
+      </select>
+    </div>
+    <textarea placeholder="在这里填写第 1 条文案...（超 60 秒自动拆分）"></textarea>
+  </div>
+
+  <!-- 卡片 2 示例 -->
+  <div class="script-card">
+    <div class="head">
+      <span class="idx">文案 2:</span>
+      <select>
+        <option value="">选择人设...</option>
+        <option>大漂亮-001</option>
+        <option>郑大嘴-001</option>
+        <option>馨月-001</option>
+      </select>
+      <span class="muted" title="图片">📷</span>
+      <span class="muted" title="声音">🎤</span>
+      <span style="flex:1;"></span>
+      <span>🎬</span>
+      <select>
+        <option>选择动作提示词...</option>
+        <option>自然走动+手势</option>
+        <option>近景特写+微笑</option>
+      </select>
+      <button class="btn">删除</button>
+    </div>
+    <textarea placeholder="在这里填写第 2 条文案..."></textarea>
+  </div>
+</div>
+
+<!-- ===== 底部启动按钮 ===== -->
+<div class="section" style="display:flex; gap:8px;">
+  <button class="btn btn-success btn-big" style="flex:1;">🚀 开始生成</button>
+  <button class="btn btn-danger btn-big" style="flex:1;">⏹ 停止</button>
+</div>
+
+<!-- ===== 管理动作提示词弹窗 ===== -->
+<div id="prompt-mgr" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200;">
+  <div style="background:#fff; width:520px; margin: 60px auto; padding:16px; border-radius:6px;">
+    <h3 style="margin-bottom:10px;">预设动作提示词列表（点击选择后编辑）</h3>
+    <div class="scroll-y" style="height:280px;">
+      <table>
+        <tr><td style="width:30px;"><input type="checkbox"></td><td>自然走动+手势</td></tr>
+        <tr><td><input type="checkbox"></td><td>近景特写+微笑</td></tr>
+        <tr><td><input type="checkbox"></td><td>边走边说</td></tr>
+        <tr><td><input type="checkbox"></td><td>坐在沙发上聊天</td></tr>
+        <tr><td><input type="checkbox"></td><td>双手比划+表情丰富</td></tr>
+      </table>
+    </div>
+    <div class="btn-row" style="margin-top:10px; justify-content: space-between;">
+      <div class="btn-row">
+        <button class="btn">➕ 新增</button>
+        <button class="btn">✏️ 编辑</button>
+        <button class="btn">🗑️ 删除</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="document.getElementById('prompt-mgr').style.display='none'">取消</button>
+        <button class="btn btn-primary">保存全部</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

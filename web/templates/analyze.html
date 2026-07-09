@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}AI 智能分析{% endblock %}
+{% block content %}
+
+<h2 style="margin-bottom:10px;">🤖 AI 智能分析 <span id="status"></span></h2>
+<p class="muted" style="margin-bottom:16px;">上传视频 → ASR 听写 → LLM 出插入方案 → 下载 JSON。</p>
+
+<form id="f" enctype="multipart/form-data" class="card">
+  <div class="form-row">
+    <label style="min-width:160px;">主视频文件（.mp4）:</label>
+    <input type="file" name="video" accept="video/*" required style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label style="min-width:160px;">插入策略:</label>
+    <select name="strategy" style="flex:1;">
+      <option value="free">🎲 自由模式（LLM 全权决定）</option>
+      <option value="sandwich" selected>🥪 三明治模式（头尾主镜头 + 中间大覆盖）</option>
+      <option value="two_anchor">🎬 双端固定（头尾主镜头 + 中间撑满素材）</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label style="min-width:160px;">预设模式:</label>
+    <select name="preset_mode" style="flex:1;">
+      <option value="1">每个文件夹插入 1 个</option>
+      <option value="2">必插文件夹 + LLM 自选</option>
+      <option value="3" selected>LLM 完全决定</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label style="min-width:160px;">视频行业:</label>
+    <input type="text" name="industry" placeholder="例如：南宁房产 / 美食探店" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label style="min-width:160px;">素材列表（可选）:</label>
+    <input type="text" name="materials" placeholder="label:秒数:必插(0/1)，多个用英文逗号" style="flex:1;">
+  </div>
+  <div class="muted" style="margin-left:160px;">例如：外景:5:0,样板间:8:1</div>
+  <div class="btn-row" style="margin-top:16px;">
+    <button type="submit" id="btn" class="btn btn-primary btn-big">🚀 开始分析</button>
+  </div>
+</form>
+
+<div class="card">
+  <div class="section-title">📋 实时日志</div>
+  <div class="log-box" id="log">等待任务...</div>
+</div>
+
+<div class="card">
+  <div class="section-title">📥 下载</div>
+  <div id="result"></div>
+</div>
+
+<script>
+const f = document.getElementById('f');
+const logEl = document.getElementById('log');
+const resultEl = document.getElementById('result');
+const statusEl = document.getElementById('status');
+
+f.onsubmit = async (e) => {
+  e.preventDefault();
+  logEl.textContent = '';
+  resultEl.innerHTML = '';
+  const btn = document.getElementById('btn');
+  btn.disabled = true; btn.textContent = '处理中...';
+  statusEl.className = '';
+  statusEl.textContent = '';
+
+  const fd = new FormData(f);
+  const resp = await fetch('/analyze', { method: 'POST', body: fd });
+  const data = await resp.json();
+
+  if (data.error) {
+    logEl.textContent = '❌ ' + data.error;
+    btn.disabled = false; btn.textContent = '🚀 开始分析';
+    return;
+  }
+
+  statusEl.className = 's-processing';
+  statusEl.style.cssText = 'background:#fff3cd;color:#856404;padding:4px 12px;border-radius:12px;font-size:12px;margin-left:8px;';
+  statusEl.textContent = '处理中';
+  logEl.textContent = '任务 ID: ' + data.task_id + '\n';
+
+  const poll = setInterval(async () => {
+    try {
+      const r = await fetch('/analyze/status/' + data.task_id);
+      const s = await r.json();
+      logEl.textContent = (s.log || []).join('\n');
+      logEl.scrollTop = logEl.scrollHeight;
+
+      if (s.status === 'done') {
+        clearInterval(poll);
+        statusEl.style.cssText = 'background:#d4edda;color:#155724;padding:4px 12px;border-radius:12px;font-size:12px;margin-left:8px;';
+        statusEl.textContent = '已完成';
+        resultEl.innerHTML = '<a href="/analyze/result/' + data.task_id + '" download>📥 下载 plan.json</a>';
+        btn.disabled = false; btn.textContent = '🚀 开始分析';
+      } else if (s.status === 'failed') {
+        clearInterval(poll);
+        statusEl.style.cssText = 'background:#f8d7da;color:#721c24;padding:4px 12px;border-radius:12px;font-size:12px;margin-left:8px;';
+        statusEl.textContent = '失败';
+        logEl.textContent += '\n❌ ' + (s.error || '');
+        btn.disabled = false; btn.textContent = '🚀 开始分析';
+      }
+    } catch (err) {
+      clearInterval(poll);
+      logEl.textContent += '\n❌ 轮询失败: ' + err;
+      btn.disabled = false; btn.textContent = '🚀 开始分析';
+    }
+  }, 2000);
+};
+</script>
+
+{% endblock %}

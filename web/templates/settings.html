@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}设置{% endblock %}
+{% block content %}
+
+<div class="section">
+  <div class="form-row">
+    <label>API Key:</label>
+    <input type="password" value="sk-xxxxxxxxxxxxx" style="flex:1;">
+    <button class="btn">👁</button>
+  </div>
+  <div class="form-row">
+    <label>并发数:</label>
+    <select style="width:80px;">
+      <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
+    </select>
+    <span class="hint">1=最稳但慢，5=最快但占满所有槽位</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <pre style="font-family:inherit; font-size:12px; line-height:1.7; white-space:pre-wrap;">
+使用说明:
+1. 在「设置」页填入 API Key
+2. 在「人设管理」页新增人设，录入图片和声音
+3. 在「任务」页添加文案框、选择人设，点击生成
+4. 每条文案独立选择人设，独立随机图片和声音
+
+v1.1.0 功能:
+- 4并发任务池：音频优先占槽，视频自动补上
+- 多人设管理：录入多图多声，勾选随机
+- 每条文案独立选择人设
+- 动态文案框，最多20条
+- 文案超60秒自动拆分
+  </pre>
+</div>
+
+<!-- ===== ASR 段 ===== -->
+<div class="section">
+  <div class="section-title">🎙 ASR 语音识别（v1.12）</div>
+  <div class="form-row">
+    <label>平台 URL:</label>
+    <input type="text" value="https://api.siliconflow.cn/v1/audio/transcriptions" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label>API Key:</label>
+    <input type="password" style="flex:1;">
+    <button class="btn">👁</button>
+  </div>
+  <div class="form-row">
+    <label>模型名:</label>
+    <input type="text" value="TeleAI/TeleSpeechASR" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label></label>
+    <button class="btn btn-primary">🔌 测试 ASR 连接</button>
+  </div>
+</div>
+
+<!-- ===== LLM 段 ===== -->
+<div class="section">
+  <div class="section-title">🤖 LLM 大模型（v1.12）</div>
+  <div class="form-row">
+    <label>平台 URL:</label>
+    <input type="text" value="http://14.116.211.42:10003/v1/chat/completions" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label>API Key:</label>
+    <input type="password" style="flex:1;">
+    <button class="btn">👁</button>
+  </div>
+  <div class="form-row">
+    <label>模型名:</label>
+    <input type="text" value="qwen-zxz" style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label></label>
+    <span class="muted">(温度 0.3 / 长度 8192 已写死，UI 不暴露)</span>
+  </div>
+  <div class="form-row">
+    <label></label>
+    <button class="btn btn-primary">🔌 测试 LLM 连接</button>
+  </div>
+</div>
+
+<div class="btn-row" style="justify-content:center;">
+  <button class="btn btn-success btn-big">保存设置</button>
+</div>
+
+{% endblock %}

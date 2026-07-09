@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}视频生成{% endblock %}
+{% block content %}
+
+<h2 style="margin-bottom:10px;">📹 视频生成 <span id="status"></span></h2>
+<p class="muted" style="margin-bottom:16px;">上传参考形象 + 样本音 + 口播文案，AI 自动生成口播视频。整个流程预计 3-10 分钟。</p>
+
+<form id="f" enctype="multipart/form-data" class="card">
+  <div class="form-row">
+    <label style="min-width:200px;">人设名（用于文件命名）:</label>
+    <input type="text" name="persona" placeholder="例如：郑大嘴" required style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label style="min-width:200px;">参考形象图片（.jpg/.png）:</label>
+    <input type="file" name="image" accept="image/*" required style="flex:1;">
+  </div>
+  <div class="form-row">
+    <label style="min-width:200px;">样本音（声音克隆参考）:</label>
+    <input type="file" name="audio" accept="audio/*" required style="flex:1;">
+  </div>
+  <div class="form-row" style="align-items:flex-start;">
+    <label style="min-width:200px;">口播文案:</label>
+    <textarea name="script" placeholder="直接写口播文字..." required style="flex:1;min-height:100px;"></textarea>
+  </div>
+  <div class="form-row">
+    <label style="min-width:200px;">动作提示词:</label>
+    <input type="text" name="action_prompt" value="角色面向镜头说话，表情自然，偶尔微笑" style="flex:1;">
+  </div>
+  <div class="btn-row" style="margin-top:16px;">
+    <button type="submit" id="btn" class="btn btn-primary btn-big">🚀 开始生成</button>
+  </div>
+</form>
+
+<div class="card">
+  <div class="section-title">📋 实时日志</div>
+  <div class="log-box" id="log">等待任务...</div>
+</div>
+
+<div class="card">
+  <div class="section-title">📥 下载</div>
+  <div id="result"></div>
+</div>
+
+<script>
+const f = document.getElementById('f');
+const logEl = document.getElementById('log');
+const resultEl = document.getElementById('result');
+const statusEl = document.getElementById('status');
+
+f.onsubmit = async (e) => {
+  e.preventDefault();
+  logEl.textContent = '';
+  resultEl.innerHTML = '';
+  const btn = document.getElementById('btn');
+  btn.disabled = true; btn.textContent = '生成中（预计 3-10 分钟）...';
+  statusEl.style.cssText = 'background:#fff3cd;color:#856404;padding:4px 12px;border-radius:12px;font-size:12px;margin-left:8px;';
+  statusEl.textContent = '处理中';
+
+  const fd = new FormData(f);
+  const resp = await fetch('/generate', { method: 'POST', body: fd });
+  const data = await resp.json();
+
+  if (data.error) {
+    logEl.textContent = '❌ ' + data.error;
+    btn.disabled = false; btn.textContent = '🚀 开始生成';
+    return;
+  }
+
+  logEl.textContent = '任务 ID: ' + data.task_id + '\n';
+
+  const poll = setInterval(async () => {
+    try {
+      const r = await fetch('/generate/status/' + data.task_id);
+      const s = await r.json();
+      logEl.textContent = (s.log || []).join('\n');
+      logEl.scrollTop = logEl.scrollHeight;
+
+      if (s.status === 'done') {
+        clearInterval(poll);
+        statusEl.style.cssText = 'background:#d4edda;color:#155724;padding:4px 12px;border-radius:12px;font-size:12px;margin-left:8px;';
+        statusEl.textContent = '已完成';
+        resultEl.innerHTML = '<a href="/generate/result/' + data.task_id + '" download>📥 下载成品 mp4</a>';
+        btn.disabled = false; btn.textContent = '🚀 开始生成';
+      } else if (s.status === 'failed') {
+        clearInterval(poll);
+        statusEl.style.cssText = 'background:#f8d7da;color:#721c24;padding:4px 12px;border-radius:12px;font-size:12px;margin-left:8px;';
+        statusEl.textContent = '失败';
+        logEl.textContent += '\n❌ ' + (s.error || '');
+        btn.disabled = false; btn.textContent = '🚀 开始生成';
+      }
+    } catch (err) {
+      clearInterval(poll);
+      logEl.textContent += '\n❌ 轮询失败: ' + err;
+      btn.disabled = false; btn.textContent = '🚀 开始生成';
+    }
+  }, 3000);
+};
+</script>
+
+{% endblock %}

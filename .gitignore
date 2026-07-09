@@ -1,0 +1,23 @@
+# 不上传大文件（视频素材、生成结果）
+bin/ffmpeg
+bin/ffprobe
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.mp4
+*.mov
+*.MOV
+*.mp3
+*.wav
+*.flac
+*.png
+*.jpg
+outputs/
+backups/
+~*.tmp
+.DS_Store
+
+# 但要保留 bin 目录结构（如果有）
+!bin/
+!bin/*.gitkeep

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}可乐 AI 工作台 - 主页{% endblock %}
+{% block content %}
+
+<div class="home-hero">
+  <h1>🎬 可乐 AI 工作台</h1>
+  <p>短视频批量生成 / 智能混剪 / 一键 AI 分析</p>
+  <p style="margin-top:8px;font-size:12px;">📂 默认输出目录：<code>~/Desktop/口播成品</code> · 当前模式：<b>单租户（未登录）</b></p>
+</div>
+
+<div class="home-grid">
+  <a href="/task" class="home-card">
+    <div class="icon">📋</div>
+    <div class="title">任务</div>
+    <div class="desc">批量生成口播视频</div>
+  </a>
+  <a href="/persona" class="home-card">
+    <div class="icon">👤</div>
+    <div class="title">人设管理</div>
+    <div class="desc">管理人设图片/声音</div>
+  </a>
+  <a href="/settings" class="home-card">
+    <div class="icon">⚙️</div>
+    <div class="title">设置</div>
+    <div class="desc">API Key / ASR / LLM</div>
+  </a>
+  <a href="/product" class="home-card">
+    <div class="icon">🎞</div>
+    <div class="title">成品</div>
+    <div class="desc">查看已生成的视频</div>
+  </a>
+  <a href="/merge" class="home-card">
+    <div class="icon">🎬</div>
+    <div class="title">混剪/插段</div>
+    <div class="desc">手动插入素材</div>
+  </a>
+  <a href="/ai" class="home-card">
+    <div class="icon">🤖</div>
+    <div class="title">ai智能</div>
+    <div class="desc">AI 一键分析混剪</div>
+  </a>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <div class="section-title">📊 系统状态</div>
+  <table style="width:auto;">
+    <tr><td>服务版本</td><td><b>v1.31</b></td></tr>
+    <tr><td>当前用户</td><td><b>guest（单租户模式）</b></td></tr>
+    <tr><td>ASR 平台</td><td><span class="muted">请到「设置」Tab 配置</span></td></tr>
+    <tr><td>LLM 平台</td><td><span class="muted">请到「设置」Tab 配置</span></td></tr>
+    <tr><td>视频生成后端</td><td><span class="muted">RunningHub 中转</span></td></tr>
+  </table>
+</div>
+
+{% endblock %}
