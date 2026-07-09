@@ -1,0 +1,89 @@
+name: 打包 Windows 安装包
+
+on:
+  # 方式 1：打 tag 自动触发（推荐发布时用）
+  push:
+    tags:
+      - 'v*'
+  # 方式 2：手动触发（调试时用）
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 拉代码
+        uses: actions/checkout@v4
+
+      - name: 装 Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: 装 Inno Setup（用于打安装包向导）
+        run: choco install innosetup -y --no-progress
+
+      - name: 装 ffmpeg（Windows 版）
+        run: choco install ffmpeg -y --no-progress
+
+      - name: 拷贝 ffmpeg 到 bin/
+        run: |
+          $ffmpegPath = (Get-Command ffmpeg.exe).Source
+          $ffprobePath = (Get-Command ffprobe.exe).Source
+          New-Item -ItemType Directory -Force -Path bin | Out-Null
+          Copy-Item $ffmpegPath -Destination bin/ffmpeg.exe -Force
+          Copy-Item $ffprobePath -Destination bin/ffprobe.exe -Force
+          Write-Host "ffmpeg -> bin/ffmpeg.exe"
+          Write-Host "ffprobe -> bin/ffprobe.exe"
+          Get-ChildItem bin/
+
+      - name: 装 Python 依赖 + PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller==6.10.0
+          pip install -r requirements.txt
+
+      - name: PyInstaller 打包（用 _win.spec）
+        run: pyinstaller --noconfirm 可乐口播视频生成器_win.spec
+
+      - name: 验证打包输出
+        run: |
+          if (-not (Test-Path "dist\可乐口播视频生成器_win\可乐口播视频生成器.exe")) {
+            Write-Error "PyInstaller 失败：没找到 可乐口播视频生成器.exe"
+            exit 1
+          }
+          $size = (Get-Item "dist\可乐口播视频生成器_win\可乐口播视频生成器.exe").Length / 1MB
+          Write-Host "✅ 打包成功，exe 大小: $([math]::Round($size, 2)) MB"
+
+      - name: 用 Inno Setup 打 setup.exe 安装包
+        run: |
+          $issPath = "$env:PROGRAMFILES(x86)\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $issPath)) {
+            $issPath = (Get-Command ISCC.exe).Source
+          }
+          Write-Host "ISCC 路径: $issPath"
+          & $issPath scripts/build_installer.iss
+          Get-ChildItem dist/*.exe
+
+      - name: 上传到 GitHub Release（打 tag 触发时）
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/可乐口播视频生成器_Setup_*.exe
+            dist/可乐口播视频生成器_win/可乐口播视频生成器.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 上传到 Artifacts（手动触发时）
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: 可乐口播视频生成器-installer
+          path: |
+            dist/可乐口播视频生成器_Setup_*.exe
+          retention-days: 7
