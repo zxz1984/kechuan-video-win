@@ -112,8 +112,14 @@ class AITab(tk.Frame):
         # v1.47：从 config 读取上次的素材文件夹列表
         if self.app is not None and hasattr(self.app, "config"):
             saved_folders = self.app.config.get("defaults", {}).get("material_folders", [])
+            _skipped_invalid = []  # v2.10.57 记录失效路径
             for mf in saved_folders:
                 if isinstance(mf, dict) and mf.get("path"):
+                    # v2.10.57：加载时校验路径是否还存在，不存在跳过（Win 上常见文件夹被删/外接硬盘没插）
+                    if not os.path.isdir(mf.get("path", "")):
+                        _skipped_invalid.append(mf.get("path", ""))
+                        print(f"[ai_tab.init] 跳过失效素材路径: {mf.get('path', '')}")
+                        continue
                     self.material_folders.append({
                         "enabled": bool(mf.get("enabled", True)),
                         "path": mf.get("path", ""),
@@ -121,6 +127,17 @@ class AITab(tk.Frame):
                         "seconds": int(mf.get("seconds", 5)),
                         "required": bool(mf.get("required", False)),
                     })
+            # v2.10.57：启动时如果跳过了失效路径，自动从 config 里删掉并写回，下次启动不再警告
+            if _skipped_invalid:
+                try:
+                    self.app.config["defaults"]["material_folders"] = [
+                        mf for mf in saved_folders
+                        if isinstance(mf, dict) and os.path.isdir(mf.get("path", ""))
+                    ]
+                    self.app._save_config()
+                    print(f"[ai_tab.init] 已清理 {len(_skipped_invalid)} 个失效路径，config 已更新")
+                except Exception as _e:
+                    print(f"[ai_tab.init] 清理失效路径失败（不影响使用）: {_e}")
         # v1.47：trace video_folder_var 变化时持久化
         self._trace_video_folder()
         # v2.10.26: 4 个覆盖率 var 加 trace 自动持久化（必须在 var 初始化之后调用）

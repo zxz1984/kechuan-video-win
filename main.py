@@ -178,7 +178,7 @@ class GlobalTaskQueue:
 
 
 APP_TITLE = "可乐口播视频生成器"
-APP_VERSION = "2.10.56"  # ⬆️ v2.10.56 修每行末尾删除素材文件夹不持久化的 bug（_on_remove_material_folder_at 没调 _save_material_folders）
+APP_VERSION = "2.10.57"  # ⬆️ v2.10.57 修 Win 端 3 个 bug：素材路径失效加载 + 人设删除按钮 + 一键清空所有配置
 
 # ===== v1.12 ASR / LLM 默认值（写死，UI 不暴露）=====
 LLM_TEMPERATURE = 0.3          # 让 LLM 老老实实出 JSON，别瞎发挥
@@ -684,6 +684,104 @@ class KoboApp:
         # v1.47：同步回 self.config，让后续 trace/callers 都能读到完整 defaults
         self.config["defaults"] = config["defaults"]
 
+    # ========== v2.10.57 新增：一键清空所有配置（Win 上"残留"场景专用） ==========
+    def _clear_all_config(self):
+        """清空所有用户敏感配置 + 路径记忆：
+        - API Key / Base URL / Workflow ID
+        - ASR (URL/Key/Model) - 重置回默认
+        - LLM (URL/Key/Model) - 重置回默认
+        - 人设列表（personas.json）
+        - Tab 6 主视频文件夹 / 素材文件夹列表
+        - output_dir / ai_output_dir
+
+        不清：modes / action_prompts / max_concurrent（这些是配置习惯不是数据）
+        """
+        if not messagebox.askyesno(
+            "⚠️ 清空所有配置",
+            "将清空以下内容（清空后需重启软件生效）：\n\n"
+            "• API Key + Base URL + Workflow ID\n"
+            "• ASR / LLM 的 Key（URL 和 Model 还原默认）\n"
+            "• 人设列表（含图片/视频/声音样本）\n"
+            "• Tab 6 主视频文件夹 + 素材文件夹列表\n"
+            "• 成品输出目录\n\n"
+            "确定要继续吗？",
+            icon="warning",
+        ):
+            return
+        # 二次确认（危险操作）
+        if not messagebox.askyesno(
+            "再次确认",
+            "⚠️ 此操作不可恢复！\n\n人设会被永久删除（不会进入回收站）。\n\n真的清空吗？",
+            icon="warning",
+        ):
+            return
+
+        cleared = []
+
+        # 1. 清 API
+        self.api_key_var.set("")
+        self.config.setdefault("api", {})
+        self.config["api"]["key"] = ""
+        cleared.append("API Key")
+
+        # 2. 重置 ASR（保留默认 URL/Model，只清 key）
+        self.asr_key_var.set("")
+        cleared.append("ASR Key")
+
+        # 3. 重置 LLM（保留默认 URL/Model，只清 key）
+        self.llm_key_var.set("")
+        cleared.append("LLM Key")
+
+        # 4. 清人设
+        try:
+            self.personas = {}
+            self._save_personas()
+            cleared.append("人设列表")
+        except Exception as e:
+            self._log(f"⚠️ 清人设失败: {e}")
+
+        # 5. 清 Tab 6 主视频文件夹 + 素材文件夹
+        try:
+            self.video_folder_var.set("")
+            if hasattr(self, "ai_tab") and self.ai_tab is not None:
+                self.ai_tab.material_folders.clear()
+                if hasattr(self.ai_tab, "_save_material_folders"):
+                    self.ai_tab._save_material_folders()
+                if hasattr(self.ai_tab, "_refresh_material_list"):
+                    self.ai_tab._refresh_material_list()
+            self.config.setdefault("defaults", {})
+            self.config["defaults"]["video_folder"] = ""
+            self.config["defaults"]["material_folders"] = []
+            cleared.append("Tab 6 文件夹")
+        except Exception as e:
+            self._log(f"⚠️ 清 Tab 6 文件夹失败: {e}")
+
+        # 6. 清 output_dir
+        try:
+            self.output_dir_var.set(str(Path.home() / "Desktop" / "口播成品"))
+            self.config["defaults"]["output_dir"] = str(Path.home() / "Desktop" / "口播成品")
+            cleared.append("输出目录")
+        except Exception as e:
+            self._log(f"⚠️ 清输出目录失败: {e}")
+
+        # 7. 写 config.yaml
+        try:
+            self._save_config()
+        except Exception as e:
+            self._log(f"⚠️ 写 config.yaml 失败: {e}")
+
+        # 8. 刷新人设 UI
+        try:
+            self._refresh_persona_combos()
+        except Exception as e:
+            self._log(f"⚠️ 刷新人设 UI 失败: {e}")
+
+        self._log(f"🧹 已清空: {', '.join(cleared)}")
+        messagebox.showinfo(
+            "完成",
+            f"已清空：{', '.join(cleared)}\n\n建议重启软件确保 UI 完全同步。",
+        )
+
     # ========== v1.12: ASR / LLM 测试连接与 Key 切换 ==========
     def _toggle_key_visibility(self, entry_widget):
         """切换 Key 输入框的显示/隐藏"""
@@ -1165,6 +1263,14 @@ class KoboApp:
 
         # 原保存按钮位置
         ttk.Button(parent, text="保存设置", command=self._save_config).grid(row=row, column=0, columnspan=2, pady=15)
+        row += 1
+
+        # v2.10.57 新增：一键清空所有配置（Win 上残留人设/路径专用）
+        ttk.Separator(parent, orient=tk.HORIZONTAL).grid(row=row, column=0, columnspan=2, sticky=tk.EW, pady=(20, 10))
+        row += 1
+        ttk.Label(parent, text="⚠️ 危险操作区", font=("", 10, "bold"), foreground="#d9534f").grid(row=row, column=0, columnspan=2, sticky=tk.W, pady=(0, 5))
+        row += 1
+        ttk.Button(parent, text="🧹 一键清空所有配置", command=self._clear_all_config).grid(row=row, column=0, columnspan=2, pady=5)
 
         parent.columnconfigure(1, weight=1)
 
@@ -1642,6 +1748,14 @@ class KoboApp:
 
     def _delete_persona(self):
         name = self._get_selected_persona_name()
+        # v2.10.57 修复：未选中时如果有现有人设，自动选第一个（避免 Win 上点删除按钮"没反应"）
+        if not name and self.personas:
+            first_name = next(iter(self.personas.keys()), None)
+            if first_name:
+                self._persona_selected_idx = 0
+                self._draw_persona_list()
+                name = first_name
+                self._log(f"未选 → 默认选第一个人设: {name}")
         if not name:
             messagebox.showwarning("提示", "请先选择要删除的人设")
             return
@@ -1649,6 +1763,10 @@ class KoboApp:
             del self.personas[name]
             self._save_personas()
             self._refresh_persona_combos()
+            # v2.10.57：删除后 idx 重置后选下一个（如果还有），方便连续删
+            if self.personas:
+                self._persona_selected_idx = 0
+                self._draw_persona_list()
             self._log(f"人设已删除: {name}")
 
     def _open_prompt_manager(self):
