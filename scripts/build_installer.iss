@@ -69,8 +69,9 @@ Source: "..\dist\可乐口播视频生成器_win\*"; \
 ; 开始菜单快捷方式
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 
-; 桌面快捷方式（用户可选，默认打勾）
-Name: "{commondesktop}\{#MyAppName}"; \
+; v2.10.57 修复：改用 {userdesktop}（当前用户桌面，普通用户有权限）
+; 原 {commondesktop} = C:\Users\Public\Desktop\，需要管理员权限，会报 0x80070005
+Name: "{userdesktop}\{#MyAppName}"; \
   Filename: "{app}\{#MyAppExeName}"; \
   Tasks: desktopicon
 
